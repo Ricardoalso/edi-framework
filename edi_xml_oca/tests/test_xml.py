@@ -36,15 +36,26 @@ class XMLTestCase(TransactionComponentCase, XMLTestCaseMixin):
                 self.backend._name, ["edi.xml"], work_ctx={"no_schema": "Nothing"}
             )
 
+    def test_xml_schema_validation(self):
+        self.assertIsNone(
+            self.handler.validate(
+                """<?xml version="1.0" encoding="UTF-8"?>
+<StandardBusinessDocumentHeader xmlns="http://www.unece.org/cefact/namespaces/StandardBusinessDocumentHeader"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.unece.org/cefact/namespaces/StandardBusinessDocumentHeader">
+  <Shoetype country="USA">42</Shoetype>
+</StandardBusinessDocumentHeader>
+                """
+            )
+        )
+
     def test_xml(self):
         data = self.handler.parse_xml(TEST_XML)
         self.assertEqual(
             data,
             {
-                "@abstract": False,
-                "@name": "shoesize",
-                "@nillable": False,
-                "@type": "shoetype",
                 "@xmlns:xs": "http://www.w3.org/2001/XMLSchema",
+                "@name": "shoesize",
+                "@type": "shoetype",
             },
         )
