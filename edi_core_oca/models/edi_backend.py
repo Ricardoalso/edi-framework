@@ -242,7 +242,7 @@ class EDIBackend(models.Model):
         except (OperationalError, IntegrityError):
             # We don't want the finally block to be executed in this case as
             # the cursor is already in an aborted state and any query will fail.
-            state = "sql_error"
+            res = "__sql_error__"
             raise
         else:
             # TODO: maybe the send handler should return desired message and state
@@ -255,7 +255,7 @@ class EDIBackend(models.Model):
             )
             res = message
         finally:
-            if not state == "sql_error":
+            if res != "__sql_error__":
                 exchange_record.write(
                     {
                         "edi_exchange_state": state,
@@ -457,13 +457,13 @@ class EDIBackend(models.Model):
         except (OperationalError, IntegrityError):
             # We don't want the finally block to be executed in this case as
             # the cursor is already in an aborted state and any query will fail.
-            state = "sql_error"
+            res = "__sql_error__"
             raise
         else:
             error = traceback = None
             state = "input_processed"
         finally:
-            if state != "sql_error":
+            if res != "__sql_error__":
                 exchange_record.write(
                     {
                         "edi_exchange_state": state,
@@ -525,7 +525,7 @@ class EDIBackend(models.Model):
         except (OperationalError, IntegrityError):
             # We don't want the finally block to be executed in this case as
             # the cursor is already in an aborted state and any query will fail.
-            state = "sql_error"
+            res = "__sql_error__"
             raise
         else:
             message = exchange_record._exchange_status_message("receive_ok")
@@ -533,7 +533,7 @@ class EDIBackend(models.Model):
             state = "input_received"
             res = message
         finally:
-            if not state == "sql_error":
+            if res != "__sql_error__":
                 exchange_record.write(
                     {
                         "edi_exchange_state": state,
