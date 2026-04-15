@@ -10,7 +10,7 @@
     "author": "Camptocamp,Odoo Community Association (OCA)",
     "maintainers": ["simahawk", "etobella"],
     "website": "https://github.com/OCA/edi-framework",
-    "depends": ["edi_component_oca", "edi_core_oca"],
+    "depends": ["edi_core_oca"],
     "data": [
         "data/cron.xml",
         "views/edi_exchange_type_views.xml",
